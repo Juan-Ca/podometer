@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 initial_count = (int) sensorEvent.values[0];
             } else {
                 TextView myAwesomeTextView = (TextView)findViewById(R.id.counts);
-                myAwesomeTextView.setText((new Integer((int) sensorEvent.values[0])).toString());
+                myAwesomeTextView.setText((new Integer((int) sensorEvent.values[0] - initial_count)).toString());
             }
         }
     }
