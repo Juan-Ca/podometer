@@ -3,13 +3,18 @@ package com.example.podometer;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
@@ -45,6 +50,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public final void onAccuracyChanged(Sensor sensor, int accuracy) {
         // Do something here if sensor accuracy changes.
+    }
+
+    public void openGoals(View view) {
+        Intent intent = new Intent(this, GoalsActivity.class);
+        startActivity(intent);
     }
 
 }

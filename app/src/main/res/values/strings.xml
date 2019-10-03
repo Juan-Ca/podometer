@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Podometer</string>
+    <string name="title_activity_goals">GoalsActivity</string>
 </resources>
