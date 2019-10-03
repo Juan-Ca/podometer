@@ -32,8 +32,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Sensor sensor = sensorEvent.sensor;
 
         if (sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-            Log.i("History", "Data point:" + sensorEvent.values[0]);
-            //map.putDouble("steps", sensorEvent.values[0]);
+            Log.i("Nouveau pas", "Total :" + sensorEvent.values[0]);
             if (initial_count == 0) {
                 initial_count = (int) sensorEvent.values[0];
             } else {
