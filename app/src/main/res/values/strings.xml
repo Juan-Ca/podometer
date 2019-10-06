@@ -1,4 +1,17 @@
 <resources>
     <string name="app_name">Podometer</string>
     <string name="title_activity_goals">GoalsActivity</string>
+    <string name="go_back_to_steps">BACK TO STEPS</string>
+    <string name="current_goal">Your current daily goals</string>
+    <string name="running_time">Running time</string>
+    <string name="calories_consume">Calories to consume</string>
+    <string name="walking_time">Walking time</string>
+    <string name="number_of_steps">Number of steps</string>
+    <string name="goal_window">YOUR GOALS</string>
+    <string name="distance_traveled">Distance to travel</string>
+    <string name="save_button">SAVE GOALS</string>
+    <string name="calories_progress">Calories</string>
+    <string name="steps_progress">Steps</string>
+    <string name="distance_progress">Distance</string>
+    <string name="goal_progress">Your goals progress</string>
 </resources>
