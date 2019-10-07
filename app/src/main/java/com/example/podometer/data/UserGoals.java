@@ -58,23 +58,29 @@ public class UserGoals {
 
     public synchronized void increaseNumberOfSteps(int numberSteps) {
         if(targets != null) {
+            boolean firstTime = (numberOfSteps == 0);
+
             numberOfSteps += numberSteps;
-            listener.updateStepProgress( getProgress(targets.getStepsToBeMade(), numberOfSteps) );
+            listener.updateStepProgress(getProgress(targets.getStepsToBeMade(), numberOfSteps));
 
-            long msSecond  = System.currentTimeMillis() - timeOfLastCall;
-            timeOfLastCall = System.currentTimeMillis();
-            double stepSpeed = (numberSteps* 1000)/msSecond;
-            if(stepSpeed >= averageStepsWhenJogging) {
-                computeNumberOfCalories((int) msSecond, true);
-                computeDistanceTravelled((int) msSecond, true);
-            } else if(stepSpeed >= averageStepsWhenWalking) {
-                computeNumberOfCalories((int) msSecond, false);
-                computeDistanceTravelled((int) msSecond, false);
+            if(firstTime) {
+                long msSecond = System.currentTimeMillis() - timeOfLastCall;
+                timeOfLastCall = System.currentTimeMillis();
+                double stepSpeed = (numberSteps * 1000) / msSecond;
+                if (stepSpeed >= averageStepsWhenJogging) {
+                    computeNumberOfCalories((int) msSecond, true);
+                    computeDistanceTravelled((int) msSecond, true);
+                } else if (stepSpeed >= averageStepsWhenWalking) {
+                    computeNumberOfCalories((int) msSecond, false);
+                    computeDistanceTravelled((int) msSecond, false);
+                }
+
+                listener.updateCaloriesProgress(getProgress(targets.getCaloriesToConsumed(), (int) caloriesConsumed));
+
+                listener.updateDistanceProcess(getProgress(targets.getDistanceToTravel(), (int) distanceTravelled));
+            } else {
+                timeOfLastCall = System.currentTimeMillis();
             }
-
-            listener.updateCaloriesProgress(getProgress(targets.getCaloriesToConsumed(), (int) caloriesConsumed));
-
-            listener.updateDistanceProcess(getProgress(targets.getDistanceToTravel(), (int) distanceTravelled));
         }
     }
 
