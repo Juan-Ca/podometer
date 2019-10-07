@@ -72,6 +72,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         goals = UserGoals.getInstance(listener);
         checkForSavedGoals();
+
+        Thread updateThread = new Thread() {
+            @Override
+            public void run() {
+                goals.updateData();
+            }
+        };
+        updateThread.start();
     }
 
     @Override

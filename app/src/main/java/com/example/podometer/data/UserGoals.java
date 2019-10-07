@@ -2,6 +2,8 @@ package com.example.podometer.data;
 
 import org.json.JSONException;
 
+import java.util.concurrent.LinkedBlockingQueue;
+
 public class UserGoals {
 
     private static UserGoals ourInstance;
@@ -30,6 +32,7 @@ public class UserGoals {
             numberOfSteps = 0;
             caloriesConsumed = 0;
             distanceTravelled = 0;
+            steps = new LinkedBlockingQueue<>();
         }
         return ourInstance;
     }
@@ -38,7 +41,7 @@ public class UserGoals {
 
     private static UserTargets targets;
 
-    private static int numberOfSteps;
+    private static int numberOfSteps = 0;
 
     private static double caloriesConsumed;
 
@@ -56,30 +59,45 @@ public class UserGoals {
         return targets;
     }
 
+    private static LinkedBlockingQueue<Integer> steps;
+
     public synchronized void increaseNumberOfSteps(int numberSteps) {
-        if(targets != null) {
-            boolean firstTime = (numberOfSteps == 0);
+        steps.add(numberSteps);
+    }
 
-            numberOfSteps += numberSteps;
-            listener.updateStepProgress(getProgress(targets.getStepsToBeMade(), numberOfSteps));
+    public void updateData() {
+        while(true) {
+            try {
+                if (targets != null) {
+                    boolean firstTime = (numberOfSteps == 0);
+                    int nextCount = steps.take();
+                    int currentSteps = nextCount - numberOfSteps;
+                    numberOfSteps = nextCount;
+                    listener.updateStepProgress(getProgress(targets.getStepsToBeMade(), numberOfSteps));
 
-            if(firstTime) {
-                long msSecond = System.currentTimeMillis() - timeOfLastCall;
-                timeOfLastCall = System.currentTimeMillis();
-                double stepSpeed = (numberSteps * 1000) / msSecond;
-                if (stepSpeed >= averageStepsWhenJogging) {
-                    computeNumberOfCalories((int) msSecond, true);
-                    computeDistanceTravelled((int) msSecond, true);
-                } else if (stepSpeed >= averageStepsWhenWalking) {
-                    computeNumberOfCalories((int) msSecond, false);
-                    computeDistanceTravelled((int) msSecond, false);
+                    if (firstTime) {
+                        long msSecond = System.currentTimeMillis() - timeOfLastCall;
+                        timeOfLastCall = System.currentTimeMillis();
+                        double stepSpeed = (currentSteps * 1000) / msSecond;
+                        if (stepSpeed >= averageStepsWhenJogging) {
+                            computeNumberOfCalories((int) msSecond, true);
+                            computeDistanceTravelled((int) msSecond, true);
+                        } else if (stepSpeed >= averageStepsWhenWalking) {
+                            computeNumberOfCalories((int) msSecond, false);
+                            computeDistanceTravelled((int) msSecond, false);
+                        }
+
+                        listener.updateCaloriesProgress(getProgress(targets.getCaloriesToConsumed(), (int) caloriesConsumed));
+
+                        listener.updateDistanceProcess(getProgress(targets.getDistanceToTravel(), (int) distanceTravelled));
+                    } else {
+                        timeOfLastCall = System.currentTimeMillis();
+                    }
+
                 }
+                Thread.sleep(10);
+            } catch (InterruptedException ex) {
 
-                listener.updateCaloriesProgress(getProgress(targets.getCaloriesToConsumed(), (int) caloriesConsumed));
-
-                listener.updateDistanceProcess(getProgress(targets.getDistanceToTravel(), (int) distanceTravelled));
-            } else {
-                timeOfLastCall = System.currentTimeMillis();
             }
         }
     }
